@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welk moreel systeem past bij jou? — NCZ 5A</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#EEF2E8;color:#333;min-height:100vh}
+#wrap{max-width:720px;margin:0 auto;padding:1rem 1rem 4rem}
+.page{display:none}.page.active{display:block}
+.hdr{background:#3D4A2A;border-radius:12px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;color:#fff}
+.hdr h1{font-size:20px;font-weight:normal;margin-bottom:8px}
+.hdr p{font-size:14px;line-height:1.7;opacity:.88}
+.card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:1.25rem}
+.btn{font-family:Georgia,serif;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-weight:bold;padding:13px 26px;font-size:15px;text-decoration:none}
+.btn-amber{background:#C4A84A;color:#fff}
+.btn-olive{background:#3D4A2A;color:#fff}
+.btn-olive:disabled{background:#bbb;cursor:not-allowed}
+.btn-ghost{background:transparent;border:1px solid #bbb;color:#666;padding:10px 18px;font-size:13px}
+.prog-wrap{height:5px;background:#ccc;border-radius:3px;margin-bottom:1.25rem;overflow:hidden}
+.prog-fill{height:100%;background:#C4A84A;border-radius:3px;transition:width .3s}
+.sc{background:#fff;border:1.5px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px;transition:border-color .2s}
+.sc.ok{border-color:#C4A84A}
+.sc-txt{font-size:14px;line-height:1.6;margin-bottom:10px;color:#333}
+.sc-num{color:#C4A84A;font-weight:bold;margin-right:4px}
+.opts{display:flex;gap:7px;flex-wrap:wrap}
+.ob{font-family:Georgia,serif;font-size:13px;padding:6px 14px;border:1px solid #ccc;border-radius:6px;background:#fff;color:#555;cursor:pointer;transition:all .15s}
+.ob:hover{background:#f4f4f4}
+.ob.E{background:#3D4A2A!important;border-color:#3D4A2A!important;color:#fff!important;font-weight:bold}
+.ob.N{background:#7A6E3A!important;border-color:#7A6E3A!important;color:#fff!important;font-weight:bold}
+.ob.O{background:#7a3a2a!important;border-color:#7a3a2a!important;color:#fff!important;font-weight:bold}
+.rc{border-radius:12px;padding:1.5rem;margin-bottom:1.1rem;color:#fff}
+.sbar{margin-bottom:10px}
+.slbl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;align-items:center}
+.str{height:7px;background:#eee;border-radius:4px;overflow:hidden}
+.sfil{height:100%;border-radius:4px}
+.badge{font-size:11px;padding:1px 6px;border-radius:4px;background:#d4efd4;color:#2a6a2a;margin-left:5px;font-style:normal}
+.vhl{border-left:3px solid #3D4A2A;padding:.85rem 1.1rem;background:#edf3e8;border-radius:0 8px 8px 0;margin-bottom:1.5rem}
+.hbar{background:#3D4A2A;border-radius:12px;padding:.85rem 1.25rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+</style>
+</head>
+<body>
+<div id="wrap">
+
+<!-- INTRO -->
+<div class="page active" id="p-intro">
+  <div class="hdr">
+    <div style="font-size:32px;margin-bottom:10px">&#127981;</div>
+    <h1>Welk moreel systeem past bij jou?</h1>
+    <p>20 stellingen, eerlijk beantwoord. Aan het einde zie je welk moreel systeem het beste aansluit bij hoe jij denkt over goed en kwaad.</p>
+  </div>
+  <div class="card" style="margin-bottom:1.25rem">
+    <p style="font-size:14px;font-weight:bold;color:#3D4A2A;margin-bottom:8px">Spelregels</p>
+    <ul style="padding-left:1.2rem;font-size:13px;color:#555;line-height:1.85">
+      <li>Er zijn geen juiste of foute antwoorden &#8212; wees eerlijk.</li>
+      <li>Antwoord op basis van je eerste gevoel, niet op wat &#8220;goed klinkt&#8221;.</li>
+      <li>Alle 20 stellingen moeten beantwoord zijn voor je het resultaat ziet.</li>
+    </ul>
+  </div>
+  <button class="btn btn-amber" onclick="startQuiz()">Start de test &#8594;</button>
+  <p style="font-size:12px;color:#888;margin-top:14px">NCZ 5A &mdash; GO! Atheneum Brakel</p>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="p-quiz">
+  <div class="hbar">
+    <span style="font-size:14px;font-weight:bold;color:#fff">Ethische positie test</span>
+    <span id="ptxt" style="font-size:13px;color:rgba(255,255,255,.75)">0 / 20</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="pfil" style="width:0%"></div></div>
+  <div id="slist"></div>
+  <div style="margin-top:1.5rem;padding-bottom:2rem">
+    <p id="rmsg" style="font-size:13px;color:#888;margin-bottom:10px">&nbsp;</p>
+    <button class="btn btn-olive" id="sbtn" disabled onclick="goResults()">Bekijk mijn resultaat &#8594;</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="page" id="p-results">
+  <div id="rinner"></div>
+</div>
+
+</div>
+<script>
+var S=[
+  {id:1,t:"De beste manier om ethisch te leven is door een goed karakter te ontwikkelen \u2014 door deugden als moed, eerlijkheid en rechtvaardigheid te oefenen.",p:"D"},
+  {id:2,t:"Iemand die altijd eerlijk handelt, ook als dat hem iets kost, is moreel te verkiezen boven iemand die alleen eerlijk is als het hem uitkomt.",p:"D"},
+  {id:3,t:"Ethiek gaat meer over wie je bent dan over welke regels je volgt.",p:"D"},
+  {id:4,t:"Een goed leven is er een waarin je je beste eigenschappen ten volle tot bloei laat komen.",p:"D"},
+  {id:5,t:"Als je moet kiezen, doe je het beste dat wat voor de meeste mensen het beste uitpakt \u2014 ook als dat voor een enkeling nadelig is.",p:"U"},
+  {id:6,t:"Een goede intentie is niet genoeg: als een beslissing slecht uitpakt voor mensen, was het een slechte beslissing.",p:"U"},
+  {id:7,t:"Als je \u00e9\u00e9n persoon kunt opofferen om vijf anderen te redden, is dat moreel de juiste keuze.",p:"U"},
+  {id:8,t:"Een maatregel die de grote meerderheid helpt maar een kleine minderheid schaadt, kan toch rechtvaardig zijn.",p:"U"},
+  {id:9,t:"Sommige dingen zijn gewoon fout \u2014 ook als ze goede gevolgen zouden hebben.",p:"K"},
+  {id:10,t:"Je mag mensen nooit gebruiken als instrument voor een ander doel, hoe goed dat doel ook is.",p:"K"},
+  {id:11,t:"Elk mens heeft een inherente waardigheid die je altijd moet respecteren, ongeacht wat hij gedaan heeft.",p:"K"},
+  {id:12,t:"Er bestaan absolute grenzen die je nooit mag overschrijden \u2014 zelfs niet als er sterke redenen voor zijn.",p:"K"},
+  {id:13,t:"Morele regels zijn afspraken die mensen met elkaar maken om vreedzaam samen te leven.",p:"C"},
+  {id:14,t:"Iets is rechtvaardig als iedereen er redelijkerwijs mee zou instemmen, ook als ze niet wisten welke positie ze in de samenleving zouden innemen.",p:"C"},
+  {id:15,t:"Wat goed en slecht is, bepalen we samen als samenleving \u2014 niet iemand of iets buiten ons.",p:"C"},
+  {id:16,t:"De legitimiteit van wetten hangt af van de instemming van de mensen die eronder leven.",p:"C"},
+  {id:17,t:"Zonder geloof in een hogere macht verliest moraal haar diepste grond.",p:"G"},
+  {id:18,t:"Heilige teksten \u2014 zoals de Bijbel, de Koran of de Thora \u2014 bieden een betrouwbare leidraad voor morele beslissingen.",p:"G"},
+  {id:19,t:"Goed en kwaad zijn uiteindelijk door God bepaald, niet door mensen.",p:"G"},
+  {id:20,t:"Een moraal die niet gefundeerd is in het geloof, mist een afdoende rechtvaardiging.",p:"G"}
+];
+var P={
+  D:{n:"Deugdethiek",who:"Aristoteles",tl:"Wees een goed mens \u2014 dan handel je goed.",c:"#3D4A2A",vh:true,d:"Voor jou draait ethiek om karakter. Goed handelen is geen kwestie van regels volgen, maar van wie je geworden bent. Iemand met deugden als moed, eerlijkheid en rechtvaardigheid handelt van nature goed. Aristoteles noemt het goede leven eudaimonia: een voortdurende zelfontplooiing die je gelukkig maakt."},
+  U:{n:"Utilitarisme",who:"Bentham & Mill",tl:"Het grootste geluk voor het grootste aantal.",c:"#7A6E3A",vh:true,d:"Jij denkt in gevolgen. De beste handeling is die welke het meeste welzijn oplevert voor de meeste mensen. Niet de intentie telt, maar het resultaat. Je bent bereid moeilijke keuzes te maken als het grotere goed dat vraagt."},
+  K:{n:"Deontologie",who:"Immanuel Kant",tl:"Behandel mensen nooit als middel \u2014 altijd als doel.",c:"#4a6030",vh:true,d:"Voor jou zijn sommige dingen gewoon goed of fout, ongeacht de gevolgen. Mensen hebben een inherente waardigheid die altijd gerespecteerd moet worden. Kant noemt dit de categorische imperatief: er bestaan absolute plichten die je niet mag schenden, ook niet voor een goed doel."},
+  C:{n:"Contracttheorie",who:"Hobbes, Rousseau & Rawls",tl:"Rechtvaardig is wat we samen redelijk zouden afspreken.",c:"#7a6020",vh:false,d:"Jij beschouwt morele normen als sociale afspraken. Rechtvaardigheid is wat redelijke mensen met elkaar zouden overeenkomen als ze eerlijk nadenken over de spelregels. De legitimiteit van moraal en recht hangt af van de instemming van de mensen die eronder leven."},
+  G:{n:"Godsdienstige ethiek",who:"Diverse religieuze tradities",tl:"Goed is wat God gebiedt.",c:"#8a5820",vh:false,d:"Voor jou vindt moraal haar diepste grond in het geloof. Goddelijke geboden of heilige geschriften bieden een zekere basis voor goed en kwaad die de menselijke rede overstijgt. Je gelooft dat moraal zonder transcendente grond haar fundament verliest."}
+};
+var ans={},shuf=[];
+function shf(a){var b=[].concat(a);for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function pg(id){var els=document.querySelectorAll('.page');for(var i=0;i<els.length;i++)els[i].classList.remove('active');document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function startQuiz(){ans={};shuf=shf(S);renderAll();upd();pg('p-quiz');}
+function renderAll(){
+  var c=document.getElementById('slist');c.innerHTML='';
+  for(var i=0;i<shuf.length;i++){
+    var s=shuf[i];
+    var d=document.createElement('div');
+    d.className='sc'+(ans[s.id]?' ok':'');d.id='sc'+s.id;
+    d.innerHTML='<p class="sc-txt"><span class="sc-num">'+(i+1)+'.</span> '+s.t+'</p><div class="opts" id="ob'+s.id+'"></div>';
+    c.appendChild(d);rdOpts(s.id);
+  }
+}
+function rdOpts(id){
+  var r=document.getElementById('ob'+id);r.innerHTML='';
+  var opts=[['E','Eens'],['N','Neutraal'],['O','Oneens']];
+  for(var i=0;i<opts.length;i++){
+    (function(v,lbl){
+      var b=document.createElement('button');
+      b.className='ob'+(ans[id]===v?' '+v:'');
+      b.textContent=lbl;
+      b.onclick=function(){ans[id]=v;document.getElementById('sc'+id).className='sc ok';rdOpts(id);upd();};
+      r.appendChild(b);
+    })(opts[i][0],opts[i][1]);
+  }
+}
+function upd(){
+  var done=Object.keys(ans).length,tot=S.length,r=tot-done;
+  document.getElementById('ptxt').textContent=done+' / '+tot;
+  document.getElementById('pfil').style.width=(done/tot*100).toFixed(0)+'%';
+  document.getElementById('rmsg').textContent=r>0?'Nog '+r+' stelling'+(r===1?'':'en')+' te beantwoorden.':'\u00a0';
+  document.getElementById('sbtn').disabled=done<tot;
+}
+function goResults(){
+  var sc={D:0,U:0,K:0,C:0,G:0};
+  for(var i=0;i<S.length;i++){if(ans[S[i].id]==='E')sc[S[i].p]++;}
+  var srt=Object.entries(sc).sort(function(a,b){return b[1]-a[1];});
+  var tk=srt[0][0],ts=srt[0][1],top=P[tk];
+  var ties=srt.filter(function(x){return x[1]===ts;});
+  var h='<div class="rc" style="background:'+top.c+'">'
+    +'<p style="font-size:11px;opacity:.65;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Jouw ethische positie</p>'
+    +'<h2 style="font-size:21px;font-weight:normal;margin-bottom:6px">'+top.n+'</h2>'
+    +'<p style="font-size:13px;opacity:.8;font-style:italic;margin-bottom:8px">'+top.tl+'</p>'
+    +'<p style="font-size:12px;opacity:.6;margin-bottom:14px">Verbonden met: '+top.who+'</p>'
+    +'<div style="border-top:1px solid rgba(255,255,255,.3);padding-top:12px">'
+    +'<p style="font-size:14px;line-height:1.65;opacity:.95">'+top.d+'</p></div></div>';
+  if(ties.length>1){
+    h+='<div style="background:#fffae0;border:1px solid #e0c040;border-radius:8px;padding:10px 14px;margin-bottom:1rem;font-size:13px;color:#7a6010">'
+      +'<strong>Gelijkstand:</strong> je scoort even hoog op '+ties.map(function(x){return P[x[0]].n;}).join(' en ')+'. Beide systemen passen bij jou.</div>';
+  }
+  h+='<div class="card" style="margin-bottom:1.1rem"><p style="font-size:14px;font-weight:bold;color:#3D4A2A;margin-bottom:14px">Volledig profiel</p>';
+  for(var i=0;i<srt.length;i++){
+    var k=srt[i][0],s=srt[i][1],p=P[k],it=(k===tk),pct=(s/4*100).toFixed(0);
+    h+='<div class="sbar"><div class="slbl">'
+      +'<span style="'+(it?'font-weight:bold;color:#222':'color:#777')+'">'+p.n+(p.vh?'<span class="badge">vrijzinnig humanisme</span>':'')+'</span>'
+      +'<span style="color:#aaa">'+s+'/4</span></div>'
+      +'<div class="str"><div class="sfil" style="width:'+pct+'%;background:'+(it?p.c:'#ccc')+'"></div></div></div>';
+  }
+  h+='<p style="font-size:12px;color:#bbb;margin-top:10px">Alleen &#8220;eens&#8221;-antwoorden tellen mee (max. 4 per systeem).</p></div>';
+  h+='<div class="vhl">'
+    +'<p style="font-size:13px;font-weight:bold;color:#3D4A2A;margin-bottom:5px">Vrijzinnig humanisme &amp; jouw positie</p>'
+    +'<p style="font-size:13px;line-height:1.65;color:#555">Het vrijzinnig humanisme sluit het nauwst aan bij de deugdethiek, het utilitarisme en de deontologie &#8212; alle drie systemen die moraal <em>autonoom</em> funderen: van binnenuit, door menselijke rede en reflectie, zonder beroep op bovennatuurlijk gezag. Scoorde je hoog op de godsdienstige ethiek? Dan is dat een interessant gesprekspunt.</p></div>';
+  h+='<button class="btn btn-ghost" onclick="ans={};pg(\'p-intro\')">&#8635; Opnieuw beginnen</button>';
+  document.getElementById('rinner').innerHTML=h;
+  pg('p-results');
+}
+</script>
+</body>
+</html>
